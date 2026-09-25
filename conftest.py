@@ -1,9 +1,8 @@
 import pytest
 import requests
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from data.urls import BASE_URL, USER_REGISTER_API_URL, USER_API_URL
+from data.helpers import Helpers
 
 @pytest.fixture(params=["chrome", "firefox"])
 def driver(request):
@@ -22,14 +21,25 @@ def driver(request):
     driver_instance.quit()
 
 @pytest.fixture
-def create_user_and_delete():
+def create_user_and_delete(driver): # передаем driver внутрь фикстуры
     user_data = {
-        "email": f"sultan_test_{requests.get('https://httpbin.org/uuid').json()['uuid'][:8]}@yandex.ru",
+        "email": Helpers.generate_random_email(),
         "password": "Password123!",
         "name": "SultanTest"
     }
     response = requests.post(USER_REGISTER_API_URL, json=user_data)
-    token = response.json().get("accessToken")
+    response_json = response.json()
+    token = response_json.get("accessToken")
+    refresh_token = response_json.get("refreshToken")
+
+    # Авторизуем пользователя в браузере через localStorage, чтобы интерфейс "видел" сессию
+    if token:
+        driver.get(BASE_URL)
+        driver.execute_script(
+            f"window.localStorage.setItem('accessToken', '{token}');"
+            f"window.localStorage.setItem('refreshToken', '{refresh_token}');"
+        )
+        driver.refresh()
 
     yield user_data, token
 

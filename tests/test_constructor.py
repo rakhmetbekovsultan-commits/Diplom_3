@@ -8,13 +8,14 @@ class TestConstructor:
         main_page = MainPage(driver)
         main_page.click_feed_button()
         main_page.click_constructor_button()
-        assert driver.current_url == BASE_URL or driver.current_url == f"{BASE_URL}/"
+        current_url = main_page.get_current_url()
+        assert current_url == BASE_URL or current_url == f"{BASE_URL}/"
 
     @allure.title("Переход по клику на 'Лента заказов'")
     def test_navigate_to_feed(self, driver):
         main_page = MainPage(driver)
         main_page.click_feed_button()
-        assert FEED_URL in driver.current_url
+        assert FEED_URL in main_page.get_current_url()
 
     @allure.title("Появление всплывающего окна с деталями при клике на ингредиент")
     def test_ingredient_modal_open(self, driver):
