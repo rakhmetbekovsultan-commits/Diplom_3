@@ -38,3 +38,19 @@ class BasePage:
     @allure.step("Клик по кнопке 'Лента Заказов'")
     def click_feed_button(self):
         self.click(BasePageLocators.FEED_BUTTON)
+
+    @allure.step("Ожидание присутствия всех элементов")
+    def find_elements(self, locator, time=15):
+        return WebDriverWait(self.driver, time).until(
+            EC.presence_of_all_elements_located(locator)
+        )
+
+    @allure.step("Ожидание невидимости элемента")
+    def wait_for_invisibility(self, locator, time=10):
+        return WebDriverWait(self.driver, time).until(
+            EC.invisibility_of_element_located(locator)
+        )
+
+    @allure.step("Ожидание выполнения произвольного условия")
+    def wait_for_condition(self, condition_func, time=15):
+        return WebDriverWait(self.driver, time).until(condition_func)

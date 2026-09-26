@@ -1,5 +1,4 @@
 import allure
-from selenium.webdriver.support.ui import WebDriverWait
 from pages.main_page import MainPage
 from pages.feed_page import FeedPage
 
@@ -18,7 +17,7 @@ class TestFeed:
         main_page.click_feed_button()
         feed_page.refresh_page()
         
-        WebDriverWait(driver, 15).until(lambda d: feed_page.get_all_time_orders_count() > count_before)
+        feed_page.wait_for_all_time_orders_to_increase(count_before)
         count_after = feed_page.get_all_time_orders_count()
         assert count_after > count_before
 
@@ -36,7 +35,7 @@ class TestFeed:
         main_page.click_feed_button()
         feed_page.refresh_page()
 
-        WebDriverWait(driver, 15).until(lambda d: feed_page.get_today_orders_count() > count_before)
+        feed_page.wait_for_today_orders_to_increase(count_before)
         count_after = feed_page.get_today_orders_count()
         assert count_after > count_before
 
