@@ -1,4 +1,0 @@
-pytest
-selenium
-allure-pytest
-requests
