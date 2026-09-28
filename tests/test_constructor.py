@@ -33,16 +33,7 @@ class TestConstructor:
     @allure.title("Увеличение счетчика ингредиента при добавлении в заказ")
     def test_ingredient_counter_increases(self, driver):
         main_page = MainPage(driver)
-        
-        # 1. Запоминаем значение счетчика до добавления ингредиента (если его нет, вернется 0)
         count_before = main_page.get_ingredient_count()
-        
-        # 2. Добавляем ингредиент в заказ (перетаскиваем)
         main_page.drag_ingredient_to_basket()
-        
-        # 3. Получаем новое значение счетчика после добавления
-        count_after = mainย_page.get_ingredient_count() if hasattr(main_page, 'get_ingredient_count') else main_page.get_ingredient_count()
-        # (или просто: count_after = main_page.get_ingredient_count())
-        
-        # 4. Проверяем, что счетчик стал больше, чем был до этого
+        count_after = main_page.get_ingredient_count()
         assert count_after > count_before

@@ -1,4 +1,5 @@
 import allure
+from selenium.common.exceptions import NoSuchElementException
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 
@@ -27,7 +28,7 @@ class MainPage(BasePage):
 
     @allure.step("Проверка закрытия модального окна ингредиента")
     def is_ingredient_modal_closed(self):
-        # Используем метод из BasePage вместо локального WebDriverWait
+        # Используем метод базовой страницы вместо прямого WebDriverWait
         return self.wait_for_invisibility(MainPageLocators.INGREDIENT_MODAL)
 
     @allure.step("Перетаскивание ингредиента в корзину конструктора")
@@ -42,7 +43,7 @@ class MainPage(BasePage):
         try:
             counter_element = element.find_element(*MainPageLocators.INGREDIENT_COUNTER)
             return int(counter_element.text)
-        except Exception:
+        except (NoSuchElementException, ValueError):
             return 0
 
     @allure.step("Оформление заказа через интерфейс с получением его номера")
@@ -50,18 +51,14 @@ class MainPage(BasePage):
         self.drag_ingredient_to_basket()
         self.click(MainPageLocators.CONFIRM_ORDER_BUTTON)
         
-        # Ожидаем появления модального окна с подтверждением заказа через BasePage
-        self.find_element(MainPageLocators.ORDER_ID_MODAL)
-        
-        # Ждем, пока сгенерируется настоящий номер заказа (перестанет быть дефолтным) через BasePage
+        # Используем wait_for_condition из BasePage
         self.wait_for_condition(
-            lambda d: d.find_element(*MainPageLocators.ORDER_NUMBER).text not in ["9999", ""]
+            lambda d: self.find_element(MainPageLocators.ORDER_ID_MODAL).is_displayed()
         )
         
         order_number_text = self.find_element(MainPageLocators.ORDER_NUMBER).text
         formatted_order_number = order_number_text.strip().replace("#", "")
         
-        # Закрываем модальное окно заказа и ждем его невидимости через BasePage
         self.click(MainPageLocators.CLOSE_ORDER_MODAL)
         self.wait_for_invisibility(MainPageLocators.ORDER_ID_MODAL)
         
