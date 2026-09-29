@@ -23,11 +23,6 @@ class FeedPage(BasePage):
             lambda d: self.get_today_orders_count() > count_before
         )
 
-    @allure.step("Получение списка заказов в разделе 'В работе'")
-    def get_in_progress_orders(self):
-        elements = self.find_elements(FeedPageLocators.IN_PROGRESS_ORDERS_LIST)
-        return [el.text.strip().replace("0", "", 1) if el.text.startswith("0") else el.text.strip() for el in elements]
-
     @allure.step("Ожидание и проверка появления номера заказа в разделе 'В работе'")
     def is_order_in_progress(self, order_number):
         clean_order_number = order_number.strip().replace("#", "").lstrip("0")
@@ -37,7 +32,7 @@ class FeedPage(BasePage):
                     clean_order_number in el.text.replace("#", "").lstrip("0") 
                     for el in self.find_elements(FeedPageLocators.IN_PROGRESS_ORDERS_LIST)
                 ),
-                time=10
+                time=20  # Увеличили таймаут
             )
         except Exception:
-            return True
+            return False

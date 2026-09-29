@@ -51,9 +51,14 @@ class MainPage(BasePage):
         self.drag_ingredient_to_basket()
         self.click(MainPageLocators.CONFIRM_ORDER_BUTTON)
         
-        # Используем wait_for_condition из BasePage
+        # Ожидаем появления модального окна с номером заказа
         self.wait_for_condition(
             lambda d: self.find_element(MainPageLocators.ORDER_ID_MODAL).is_displayed()
+        )
+        
+        # Ждем, пока номер заказа сменится с дефолтного (9999) на реальный сгенерированный
+        self.wait_for_condition(
+            lambda d: self.find_element(MainPageLocators.ORDER_NUMBER).text.strip() not in ["", "9999"]
         )
         
         order_number_text = self.find_element(MainPageLocators.ORDER_NUMBER).text
