@@ -1,1 +1,0 @@
-{"name": "Переход по клику на 'Конструктор'", "status": "skipped", "parameters": [{"name": "driver", "value": "'chrome'"}], "start": 1790589941722, "stop": 1790589941722, "uuid": "aa0ce794-9f5c-4914-a8ee-5d8716ebbd27", "testCaseId": "48c4c2011167637e2de4f61f5c047bc9", "fullName": "tests.test_constructor.TestConstructor#test_navigate_to_constructor"}
